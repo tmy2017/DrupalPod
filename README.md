@@ -1,8 +1,7 @@
 # DrupalPod
 
-| | | | |
-| - | - | - | - |
-| <img alt="DrupalPod logo" src="https://user-images.githubusercontent.com/22901/122864786-40253c00-d2f3-11eb-959b-61fb6871e3f4.png" width=150> | Please provide [feedback, bug reports and feature requests through Github issues](https://github.com/shaal/DrupalPod/issues/new/choose) | | |
+| <img alt="DrupalPod logo" src="https://user-images.githubusercontent.com/22901/122864786-40253c00-d2f3-11eb-959b-61fb6871e3f4.png" width=150> | Please provide [feedback, bug reports and feature requests through Github issues](https://github.com/shaal/DrupalPod/issues/new/choose) |
+| - | - |
 
 ## Start here
 
