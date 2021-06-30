@@ -7,6 +7,7 @@ services:
     # On Linux may need to to `export UID` in your environment
     # or add UID in project's .ddev/.env
     # user: "${UID}:${UID}"
+    user: "33333:33333"
     build:
       context: './php-build'
       args:
@@ -33,4 +34,3 @@ services:
     healthcheck:
       # Use "true" as the healthcheck to ignore its result
       test: ["CMD", "true"]
-
