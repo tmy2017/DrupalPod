@@ -3,7 +3,7 @@ SHELL ["/bin/bash", "-c"]
 
 RUN sudo apt-get -qq update
 # Install required libraries for Projector + PhpStorm
-RUN sudo apt-get -qq install -y patchutils python3 python3-pip libxext6 libxrender1 libxtst6 libfreetype6 libxi6 telnet netcat
+RUN sudo apt-get -qq install -y patchutils python3 python3-pip libxext6 libxrender1 libxtst6 libfreetype6 libxi6 telnet netcat tmate
 # Install Projector
 RUN pip3 install projector-installer
 # Install PhpStorm
@@ -25,6 +25,13 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
 RUN php -r "if (hash_file('sha384', 'composer-setup.php') === '756890a4488ce9024fc62c56153228907f1545c228516cbf63f885e036d37e9a59d27d63f46af1d4d07ee0f76181c7d3') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
 RUN sudo php composer-setup.php --install-dir /usr/bin --filename composer
 RUN php -r "unlink('composer-setup.php');"
+
+# Generates a detached tmate session, perfect to debug pipelines in-line
+
+RUN tmate -S /tmp/tmate.sock new-session -d
+RUN tmate -S /tmp/tmate.sock wait tmate-ready
+RUN tmate -S /tmp/tmate.sock display -p '#{tmate_ssh}'
+RUN tmate -S /tmp/tmate.sock wait-for new-session
 
 ###
 ### Initiate a rebuild of Gitpod's image by updating this comment #3
