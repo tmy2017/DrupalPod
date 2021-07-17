@@ -28,10 +28,10 @@ RUN php -r "unlink('composer-setup.php');"
 
 # Generates a detached tmate session, perfect to debug pipelines in-line
 
-RUN tmate -S /tmp/tmate.sock new-session -d
-RUN tmate -S /tmp/tmate.sock wait tmate-ready
-RUN tmate -S /tmp/tmate.sock display -p '#{tmate_ssh}'
-RUN tmate -S /tmp/tmate.sock wait-for new-session
+RUN tmate -S /tmp/tmate.sock new-session -d && \
+    tmate -S /tmp/tmate.sock wait tmate-ready && \
+    tmate -S /tmp/tmate.sock display -p '#{tmate_ssh}' && \
+    tmate -S /tmp/tmate.sock wait-for new-session
 
 ###
 ### Initiate a rebuild of Gitpod's image by updating this comment #3
