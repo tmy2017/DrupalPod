@@ -34,5 +34,5 @@ RUN tmate -S /tmp/tmate.sock new-session -d && \
     tmate -S /tmp/tmate.sock wait-for new-session
 
 ###
-### Initiate a rebuild of Gitpod's image by updating this comment #4
+### Initiate a rebuild of Gitpod's image by updating this comment #5
 ###
