@@ -1,7 +1,7 @@
 FROM gitpod/workspace-full
 SHELL ["/bin/bash", "-c"]
 
-ENV TRIGGER_REBUILD 1
+ENV TRIGGER_REBUILD 2
 
 RUN sudo apt-get -qq update
 # Install required libraries for Projector + PhpStorm
