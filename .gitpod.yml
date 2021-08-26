@@ -7,6 +7,7 @@ tasks:
   - init: |
       .gitpod/download-ddev-images.sh
       .gitpod/ddev-in-gitpod-setup.sh
+      touch perhaps-this-file-will-break-prebuild.txt
       .gitpod/drupal/drupalpod-setup.sh
     command: |
       .gitpod/ddev-in-gitpod-setup.sh
