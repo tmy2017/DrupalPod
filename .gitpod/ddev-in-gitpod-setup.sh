@@ -1,27 +1,34 @@
 #!/usr/bin/env bash
-if [ -n "$DEBUG_DRUPALPOD" ]; then
+if [ -n "$DEBUG_DRUPALPOD" ] || [ -n "$GITPOD_HEADLESS" ]; then
     set -x
 fi
 
 # Set up ddev for use on gitpod
-
-set -eu -o pipefail
 
 DDEV_DIR="${GITPOD_REPO_ROOT}/.ddev"
 # Generate a config.gitpod.yaml that adds the gitpod
 # proxied ports so they're known to ddev.
 shortgpurl="${GITPOD_WORKSPACE_URL#'https://'}"
 
+# Set the default PHP version to 7.4
+if [ -z "$DP_PHP_VERSION" ]; then
+  DP_PHP_VERSION="7.4"
+fi
+
 cat <<CONFIGEND > "${DDEV_DIR}"/config.gitpod.yaml
 #ddev-gitpod-generated
-use_dns_when_possible: false
-# Throwaway ports, otherwise Gitpod throw an error 'port needs to be > 1024'
-router_http_port: "8888"
-router_https_port: "8889"
-additional_fqdns:
-- 8888-${shortgpurl}
-- 8025-${shortgpurl}
-- 8036-${shortgpurl}
+php_version: "$DP_PHP_VERSION"
+
+bind_all_interfaces: true
+host_webserver_port: 8080
+# Will ignore the direct-bind https port, which will land on 2222
+host_https_port: 2222
+# Allows local db clients to run
+host_db_port: 3306
+# Assign MailHog port
+host_mailhog_port: "8025"
+# Assign phpMyAdmin port
+host_phpmyadmin_port: 8036
 CONFIGEND
 
 # We need host.docker.internal inside the container,
@@ -33,14 +40,11 @@ cat <<COMPOSEEND >"${DDEV_DIR}"/docker-compose.host-docker-internal.yaml
 version: "3.6"
 services:
   web:
+    environment:
+      - DRUSH_OPTIONS_URI=$(gp url 8080)
     extra_hosts:
     - "host.docker.internal:${hostip}"
-    # This adds 8080 on the host (bound on all interfaces)
-    # It goes directly to the web container without
-    # ddev-nginx
-    ports:
-    - 8080:80
 COMPOSEEND
 
 # Misc housekeeping before start
-ddev config global --instrumentation-opt-in=true --router-bind-all-interfaces=true
+ddev config global --instrumentation-opt-in=true --omit-containers=ddev-router

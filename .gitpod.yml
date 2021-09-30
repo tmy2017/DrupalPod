@@ -6,57 +6,53 @@ image:
 tasks:
   - init: |
       .gitpod/download-ddev-images.sh
-      .gitpod/setup-ddev.sh
-      ddev composer run-script post-root-package-install
+      .gitpod/ddev-in-gitpod-setup.sh
+      .gitpod/drupal/drupalpod-setup.sh
     command: |
-      .gitpod/setup-ddev.sh
+      .gitpod/ddev-in-gitpod-setup.sh
+      .gitpod/env-setup.sh
       .gitpod/drupal/ssh/01-check-private-ssh.sh
-      .gitpod/drupal/pull-issue-fork.sh
+      .gitpod/drupal/drupalpod-setup.sh
 
 # VScode xdebug extension
 vscode:
   extensions:
+    # PHP extensions.
     - felixfbecker.php-debug
+    - wongjn.php-sniffer
+    - neilbrayfield.php-docblocker
+    - bmewburn.vscode-intelephense-client
+
+    # Twig extensions.
+    - mblode.twig-language-2
+
+    # Help extensions.
+    - drupal-mentoring.drupalpod-ext
 
 ports:
+  # Used by ddev - direct-bind https port
+  - port: 2222
+    onOpen: ignore
+  # Used by ddev - local db clients
+  - port: 3306
+    onOpen: ignore
   # Used by projector
   - port: 6942
     onOpen: ignore
-    visibility: private
-  # Direct-connect ddev-webserver port that is the main port
-  - port: 8080
-    visibility: private
-  # Currently un-notified and unsupported mailhog http port
+  # Used by MailHog
   - port: 8025
     onOpen: ignore
-    visibility: private
-  # Currently un-notified and unsupported mailhog https port
-  - port: 8026
-    onOpen: ignore
-    visibility: private
-  # Currently un-notified and unsupported phpmyadmin http port
+  # Used by phpMyAdmin
   - port: 8036
     onOpen: ignore
-    visibility: private
-  # Currently un-notified and unsupported phpmyadmin https port
-  - port: 8037
+  # Direct-connect ddev-webserver port that is the main port
+  - port: 8080
     onOpen: ignore
-    visibility: private
-  # router http port that we're ignoring.
-  - port: 8888
-    onOpen: ignore
-    visibility: private
-  # router https port that we're ignoring.
-  - port: 8889
-    onOpen: ignore
-    visibility: private
   # xdebug port
   - port: 9000
     onOpen: ignore
-    visibility: private
   # projector port
   - port: 9999
-    visibility: private
 
 github:
   prebuilds:
@@ -71,7 +67,7 @@ github:
     # add a check to pull requests (defaults to true)
     addCheck: true
     # add a "Review in Gitpod" button as a comment to pull requests (defaults to false)
-    addComment: true
+    addComment: false
     # add a "Review in Gitpod" button to the pull request's description (defaults to false)
     addBadge: true
     # add a label once the prebuild is ready to pull requests (defaults to false)
