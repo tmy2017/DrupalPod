@@ -102,18 +102,20 @@ GITMODULESEND
     # double quotes explained - https://stackoverflow.com/a/1250279/5754049
     if [ -n "$DP_PROJECT_NAME" ]; then
         cd "${GITPOD_REPO_ROOT}" && \
-        ddev composer config \
-        repositories."$DP_PROJECT_NAME" \
-        ' '"'"' {"type": "path", "url": "'"repos/$DP_PROJECT_NAME"'", "options": {"symlink": true}} '"'"' '
+        # ddev composer config \
+        # repositories.0 \
+        # ' '"'"' {"type": "path", "url": "'"repos/$DP_PROJECT_NAME"'", "options": {"symlink": true}} '"'"' '
+        echo "$(jq '.repositories |= [{"type": "path", "url": "repos/drupal", "options": {"symlink": true}}] + . '  --indent 4 composer.json)" > composer.json
     fi
 
     if [ "$DP_PROJECT_TYPE" == "project_core" ]; then
         # Add a special path when working on core contributions
         # (Without it, /web/modules/contrib is not found by website)
-        cd "${GITPOD_REPO_ROOT}" && \
-        ddev composer config \
-        repositories.drupal-core-contributions \
-        ' '"'"' {"type": "path", "url": "'"repos/drupal/core"'"} '"'"' '
+        # cd "${GITPOD_REPO_ROOT}" && \
+        # ddev composer config \
+        # repositories \
+        # ' '"'"' {"type": "path", "url": "'"repos/drupal/core"'"} '"'"' '
+
 
         # Removing the conflict part of composer
         echo "$(cat composer.json | jq 'del(.conflict)' --indent 4)" > composer.json
@@ -121,10 +123,6 @@ GITMODULESEND
 
     # Prepare special setup to work with Drupal core
     if [ "$DP_PROJECT_TYPE" == "project_core" ]; then
-
-        # Set special setup for composer for working on Drupal core
-        cd "$GITPOD_REPO_ROOT"/web && \
-        patch -p1 < "$GITPOD_REPO_ROOT"/src/composer-drupal-core-setup/scaffold-patch-index-php.patch
 
         # web/core -> ../repos/drupal/core
         if [ ! -L "$GITPOD_REPO_ROOT"/web/core ]; then
@@ -144,10 +142,10 @@ GITMODULESEND
         fi
 
         # repos/drupal/sites/default -> ../../../web/sites/default
-        if [ ! -L "$GITPOD_REPO_ROOT"/repos/drupal/sites/default ]; then
-            cd "$GITPOD_REPO_ROOT"/repos/drupal/sites/default && \
-            ln -s ../../../../web/sites/default/settings.php .
-        fi
+        # if [ ! -L "$GITPOD_REPO_ROOT"/repos/drupal/sites/default ]; then
+        #     cd "$GITPOD_REPO_ROOT"/repos/drupal/sites/default && \
+        #     ln -s ../../../../web/sites/default/settings.php .
+        # fi
 
         # Create folders for running tests
         mkdir -p "$GITPOD_REPO_ROOT"/web/sites/simpletest
@@ -159,11 +157,22 @@ GITMODULESEND
             cd "$GITPOD_REPO_ROOT"/repos/drupal/sites && \
             ln -s ../../../web/sites/simpletest .
         fi
+
+        # Remove vendor directory, so `composer require` will reinstall packages
+        rm -rf "${GITPOD_REPO_ROOT}"/vendor
     fi
 
     if [ -n "$DP_PROJECT_NAME" ]; then
         # Add the project to composer (it will get the version according to the branch under `/repo/name_of_project`)
-        cd "${GITPOD_REPO_ROOT}" && ddev composer require drupal/"$DP_PROJECT_NAME"
+        cd "${GITPOD_REPO_ROOT}" && time ddev composer require drupal/"$DP_PROJECT_NAME"
+    fi
+
+    # Patch index.php for Drupal core development (must run after composer require above)
+    if [ "$DP_PROJECT_TYPE" == "project_core" ]; then
+
+        # Set special setup for composer for working on Drupal core
+        cd "$GITPOD_REPO_ROOT"/web && \
+        patch -p1 < "$GITPOD_REPO_ROOT"/src/composer-drupal-core-setup/scaffold-patch-index-php.patch
     fi
 
     # Configure phpcs for drupal.
