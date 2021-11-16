@@ -1,4 +1,4 @@
-FROM gitpod/workspace-full
+FROM gitpod/workspace-base
 SHELL ["/bin/bash", "-c"]
 # ENV HOMEBREW_INSTALL_FROM_API=true
 
@@ -9,19 +9,25 @@ RUN sudo apt-get -qq install -y patchutils python3 python3-pip libxext6 libxrend
 RUN pip3 install projector-installer
 # Install PhpStorm
 RUN mkdir -p ~/.projector/configs  # Prevents projector install from asking for the license acceptance
-RUN projector install 'PhpStorm 2020.3.3' --no-auto-run
+# RUN projector install 'PhpStorm 2020.3.3' --no-auto-run
 
 # Install ddev
-RUN brew install drud/ddev/ddev
+RUN curl -LO https://raw.githubusercontent.com/drud/ddev/master/scripts/install_ddev.sh && bash install_ddev.sh
+
+# Install ddev
+# RUN brew install drud/ddev/ddev
 
 # Install GitUI (terminal-ui for git)
-RUN brew install gitui
+# RUN brew install gitui
 
 # Install dialog (interactive script)
-RUN brew install dialog
+# RUN brew install dialog
 
 # Install Minio client
-RUN brew install minio-mc
+# RUN brew install minio-mc
+
+# Instal PHP
+RUN sudo apt-get -qq install -y php libapache2-mod-php
 
 # Install latest composer
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
