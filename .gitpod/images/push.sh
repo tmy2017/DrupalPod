@@ -14,4 +14,6 @@ DOCKER_REPO=drupalpod/drupalpod-gitpod-base:"$TODAY"-base-experimental
 echo "Pushing ${DOCKER_REPO}"
 set -x
 # Build only current architecture and load into docker
-docker buildx build -t "${DOCKER_REPO}" --push --platform=linux/amd64 .
+# docker buildx build -t "${DOCKER_REPO}" --push --platform=linux/amd64 .
+docker build -t "${DOCKER_REPO}" .
+docker image push "${DOCKER_REPO}"

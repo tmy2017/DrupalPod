@@ -1,33 +1,84 @@
-FROM gitpod/workspace-base
+FROM gitpod/workspace-base:latest
 SHELL ["/bin/bash", "-c"]
 # ENV HOMEBREW_INSTALL_FROM_API=true
 
 RUN sudo apt-get -qq update
 # Install required libraries for Projector + PhpStorm
-RUN sudo apt-get -qq install -y patchutils python3 python3-pip libxext6 libxrender1 libxtst6 libfreetype6 libxi6 telnet netcat
+# https://github.com/JetBrains/projector-installer
+
+RUN sudo apt-get -qq install -y python3 python3-pip
+RUN sudo apt-get -qq install -y python3-cryptography
+RUN python3 -m pip install -U pip
+RUN sudo apt-get -qq install -y less libxext6 libxrender1 libxtst6 libfreetype6 libxi6
 # Install Projector
 RUN pip3 install projector-installer
 # Install PhpStorm
 RUN mkdir -p ~/.projector/configs  # Prevents projector install from asking for the license acceptance
-# RUN projector install 'PhpStorm 2020.3.3' --no-auto-run
+RUN .local/bin/projector install 'PhpStorm 2020.3.3' --no-auto-run
+
+# Install additional packages
+RUN sudo apt-get -qq install -y patchutils telnet netcat
+
+### Docker ###
+# LABEL dazzle/layer=tool-docker
+# LABEL dazzle/test=tests/tool-docker.yaml
+# USER root
+# ENV TRIGGER_REBUILD=3
+# # https://docs.docker.com/engine/install/ubuntu/
+# RUN curl -o /var/lib/apt/dazzle-marks/docker.gpg -fsSL https://download.docker.com/linux/ubuntu/gpg \
+#     && apt-key add /var/lib/apt/dazzle-marks/docker.gpg \
+#     && add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" \
+#     && install-packages docker-ce docker-ce-cli containerd.io
+
+# RUN curl -o /usr/bin/slirp4netns -fsSL https://github.com/rootless-containers/slirp4netns/releases/download/v1.1.12/slirp4netns-$(uname -m) \
+#     && chmod +x /usr/bin/slirp4netns
+
+# RUN curl -o /usr/local/bin/docker-compose -fsSL https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64 \
+#     && chmod +x /usr/local/bin/docker-compose
+
+# # https://github.com/wagoodman/dive
+# RUN curl -o /tmp/dive.deb -fsSL https://github.com/wagoodman/dive/releases/download/v0.10.0/dive_0.10.0_linux_amd64.deb \
+#     && apt install /tmp/dive.deb \
+#     && rm /tmp/dive.deb
+
+### Homebrew ###
+LABEL dazzle/layer=tool-brew
+LABEL dazzle/test=tests/tool-brew.yaml
+USER gitpod
+# Dazzle does not rebuild a layer until one of its lines are changed. Increase this counter to rebuild this layer.
+ENV TRIGGER_BREW_REBUILD=4
+RUN mkdir -p ~/.cache && /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+ENV PATH=$PATH:/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin/
+ENV MANPATH="$MANPATH:/home/linuxbrew/.linuxbrew/share/man"
+ENV INFOPATH="$INFOPATH:/home/linuxbrew/.linuxbrew/share/info"
+ENV HOMEBREW_NO_AUTO_UPDATE=1
 
 # Install ddev
-RUN curl -LO https://raw.githubusercontent.com/drud/ddev/master/scripts/install_ddev.sh && bash install_ddev.sh
+RUN brew install drud/ddev/ddev
 
-# Install ddev
-# RUN brew install drud/ddev/ddev
+# Install nodeJS
+RUN brew install node
 
 # Install GitUI (terminal-ui for git)
-# RUN brew install gitui
+RUN brew install gitui
 
 # Install dialog (interactive script)
-# RUN brew install dialog
+RUN brew install dialog
 
 # Install Minio client
-# RUN brew install minio-mc
+RUN brew install minio-mc
+
+# Install composer
+# USER root
+# RUN add-apt-repository -y ppa:ondrej/php \
+#     && install-packages composer
+USER root
+RUN add-apt-repository -y ppa:ondrej/php \
+    && install-packages php8.0
+# RUN brew install composer
 
 # Instal PHP
-RUN sudo apt-get -qq install -y php libapache2-mod-php
+# RUN sudo apt-get -qq install -y php libapache2-mod-php
 
 # Install latest composer
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
