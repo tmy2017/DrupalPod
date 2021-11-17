@@ -6,18 +6,18 @@ RUN sudo apt-get -qq update
 # Install required libraries for Projector + PhpStorm
 # https://github.com/JetBrains/projector-installer
 
-RUN sudo apt-get -qq install -y python3 python3-pip
-RUN sudo apt-get -qq install -y python3-cryptography
-RUN python3 -m pip install -U pip
-RUN sudo apt-get -qq install -y less libxext6 libxrender1 libxtst6 libfreetype6 libxi6
-# Install Projector
-RUN pip3 install projector-installer
-# Install PhpStorm
-RUN mkdir -p ~/.projector/configs  # Prevents projector install from asking for the license acceptance
-RUN .local/bin/projector install 'PhpStorm 2020.3.3' --no-auto-run
+# RUN sudo apt-get -qq install -y python3 python3-pip
+# RUN sudo apt-get -qq install -y python3-cryptography
+# RUN python3 -m pip install -U pip
+# RUN sudo apt-get -qq install -y less libxext6 libxrender1 libxtst6 libfreetype6 libxi6
+# # Install Projector
+# RUN pip3 install projector-installer
+# # Install PhpStorm
+# RUN mkdir -p ~/.projector/configs  # Prevents projector install from asking for the license acceptance
+# RUN .local/bin/projector install 'PhpStorm 2020.3.3' --no-auto-run
 
 # Install additional packages
-RUN sudo apt-get -qq install -y patchutils telnet netcat
+# RUN sudo apt-get -qq install -y patchutils telnet netcat
 
 ### Docker ###
 # LABEL dazzle/layer=tool-docker
@@ -49,15 +49,16 @@ USER gitpod
 ENV TRIGGER_BREW_REBUILD=4
 RUN mkdir -p ~/.cache && /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ENV PATH=$PATH:/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin/
-ENV MANPATH="$MANPATH:/home/linuxbrew/.linuxbrew/share/man"
-ENV INFOPATH="$INFOPATH:/home/linuxbrew/.linuxbrew/share/info"
+# ENV MANPATH="$MANPATH:/home/linuxbrew/.linuxbrew/share/man"
+# ENV INFOPATH="$INFOPATH:/home/linuxbrew/.linuxbrew/share/info"
 ENV HOMEBREW_NO_AUTO_UPDATE=1
+
+# Install nodeJS
+# RUN brew install node
+RUN sudo apt-get -qq install -y nodejs
 
 # Install ddev
 RUN brew install drud/ddev/ddev
-
-# Install nodeJS
-RUN brew install node
 
 # Install GitUI (terminal-ui for git)
 RUN brew install gitui
