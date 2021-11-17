@@ -90,6 +90,7 @@ RUN sudo apt-get -qq install -y dialog
 # RUN brew install minio-mc
 RUN wget https://dl.min.io/client/mc/release/linux-amd64/mcli_20211116203736.0.0_amd64.deb
 RUN sudo dpkg -i mcli_20211116203736.0.0_amd64.deb
+RUN sudo mv /usr/local/bin/mcli /usr/local/bin/mc
 
 # Install composer
 # USER root
