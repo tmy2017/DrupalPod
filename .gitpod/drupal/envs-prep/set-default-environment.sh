@@ -15,3 +15,6 @@ cd "$GITPOD_REPO_ROOT" && ddev snapshot restore demo_umami
 # Clone Drupal core repo
 mkdir -p "${GITPOD_REPO_ROOT}"/repos
 cd "${GITPOD_REPO_ROOT}"/repos && time git clone https://git.drupalcode.org/project/drupal
+
+# Clear big file
+cd "$GITPOD_REPO_ROOT" && rm -rf ../ready-made-envs
