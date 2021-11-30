@@ -5,7 +5,9 @@ image: drupalpod/drupalpod-gitpod-base:20211116-ready-made-envs
 tasks:
   - init: |
       .gitpod/utils/send-a-message-gcs.sh
+      echo "sleeping 1 minute"
       sleep 1m
+      echo "finished sleeping"
       # .gitpod/utils/download-ddev-images.sh
       # .gitpod/utils/ddev-in-gitpod-setup.sh
       # .gitpod/drupal/envs-prep/prepare-environments-gcs.sh
