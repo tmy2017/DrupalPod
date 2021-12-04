@@ -34,46 +34,48 @@ vscode:
     - timonwong.shellcheck
     - rogalmic.bash-debug
 
+    - alefragnani.bookmarks
+
 ports:
   # Used by ddev - direct-bind https port
   - port: 2222
     onOpen: ignore
-  # Used by ddev - local db clients
+# Used by ddev - local db clients
   - port: 3306
     onOpen: ignore
-  # Used by projector
+# Used by projector
   - port: 6942
     onOpen: ignore
-  # Used by MailHog
+# Used by MailHog
   - port: 8025
     onOpen: ignore
-  # Used by phpMyAdmin
+# Used by phpMyAdmin
   - port: 8036
     onOpen: ignore
-  # Direct-connect ddev-webserver port that is the main port
+# Direct-connect ddev-webserver port that is the main port
   - port: 8080
     onOpen: ignore
-  # xdebug port
+# xdebug port
   - port: 9000
     onOpen: ignore
-  # projector port
+# projector port
   - port: 9999
 
 github:
   prebuilds:
     # enable for the master/default branch (defaults to true)
     master: true
-    # enable for all branches in this repo (defaults to false)
+# enable for all branches in this repo (defaults to false)
     branches: true
-    # enable for pull requests coming from this repo (defaults to true)
+# enable for pull requests coming from this repo (defaults to true)
     pullRequests: true
-    # enable for pull requests coming from forks (defaults to false)
+# enable for pull requests coming from forks (defaults to false)
     pullRequestsFromForks: true
-    # add a check to pull requests (defaults to true)
+# add a check to pull requests (defaults to true)
     addCheck: true
-    # add a "Review in Gitpod" button as a comment to pull requests (defaults to false)
+# add a "Review in Gitpod" button as a comment to pull requests (defaults to false)
     addComment: false
-    # add a "Review in Gitpod" button to the pull request's description (defaults to false)
+# add a "Review in Gitpod" button to the pull request's description (defaults to false)
     addBadge: true
-    # add a label once the prebuild is ready to pull requests (defaults to false)
+# add a label once the prebuild is ready to pull requests (defaults to false)
     addLabel: true
