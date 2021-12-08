@@ -1,5 +1,5 @@
-image:
-  file: .gitpod/images/Dockerfile
+image: drupalpod/drupalpod-gitpod-base:20211116-ready-made-envs
+
 
 # ddev and composer are running as part of the prebuild
 # when starting a workspace all docker images are ready
